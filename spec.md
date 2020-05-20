@@ -6,12 +6,32 @@ The idea is to create a Twitter Bot that helps its followers learn a word in a s
 -  4/4 - 3 hours updating spec/reading twitter API
 - 18/04 - 4 hours updating spec/reading twitter API
 - 20/04 - 10:30 - 12:30 starting TDD for basic database methods
+- 15/05 - 30 mins: more planning
+
+This will be a python Flask app that will be hosted on Heroku and using PostgresDB with SQLAlchemy and the ORM. 
+
+## helpful references
+Customer engagement through DMs: https://developer.twitter.com/en/docs/tutorials/customer-engagement-application-playbook
+Another tutorial perhaps: https://blog.theodo.com/2017/03/developping-a-flask-web-app-with-a-postresql-database-making-all-the-possible-errors/
+
 ## Goals & Product Requirements
+MVP:
+- Allow users to choose language
+- send word + context to user 2x wk on Wed and Sun
 
-- Allow users to choose language and context
-- send word + context to user in the time period that they want
+- strech goals:
+a. user chooses their level of the language (tbh beginners shouldn't use this)
+b. user can choose context (video, article, song)
+c. user can customize which days to receive the link
+- future development: i'd like to get some practice with REST APIs at some point and i can basically make these method functions into a java microservice and have my twitter bot ping the microservice and then communicate to twitter, so that's good in the hood. But first, i'll write it at is, then refactor into a microservice! so i won't be overwhelmed by all the things I need to figure out
+    /english/date/{word,link}
 
-- strech goals: user chooses their level of the language (tbh beginners shouldn't use this)
+## Timeline:
+There's 3 main chunks to implement:
+1. Twitter communication
+2. DB connections
+3. finding a link to an article to the word
+
 
 ## Methods
 global const:
@@ -60,8 +80,9 @@ regex parsing to figure out: user, user's desired action & language, call approp
     else: error handling
 - get language: error handling
 
-[ ] get_new_mentions()
-- pings mentions timeline every X amt of minutes to see if there are new mentions
+[ ] get_new_mentions() --> use Account API 
+- ~pings mentions timeline every X amt of minutes to see if there are new mentions~
+- subscribe to at mentions 
 - calls parse_tweet for each mention
 
 [ ] get_followers()
@@ -124,6 +145,7 @@ BOT TO USER-------
 some ACK
 
 _______________________End of sample convo______________________
+
 ## Testing
 make sure to noop/containerize tests
 [db_tests]

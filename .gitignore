@@ -1,0 +1,7 @@
+twitter-bot-env/
+.env
+
+*.pyc
+__pycache__/
+
+.vscode/
