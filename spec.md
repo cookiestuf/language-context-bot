@@ -8,12 +8,15 @@ The idea is to create a Twitter Bot that helps its followers learn a word in a s
 - 20/04 - 10:30 - 12:30 starting TDD for basic database methods
 - 15/05 - 30 mins: more planning
 - 19/05 - 1.5 + 2 = 3.5 hours -- setting up skeleton heroku app, reading flask documentation
-
+- 20/05 - 2 hours -- create and local db for app
+- 21/05 - writing out BPs
 This will be a python Flask app that will be hosted on Heroku and using PostgresDB with SQLAlchemy and the ORM. 
 
 ## helpful references
 Customer engagement through DMs: https://developer.twitter.com/en/docs/tutorials/customer-engagement-application-playbook
 Another tutorial perhaps: https://blog.theodo.com/2017/03/developping-a-flask-web-app-with-a-postresql-database-making-all-the-possible-errors/
+https://developer.twitter.com/en/docs/tutorials/getting-started-with-the-account-activity-api
+https://flask.palletsprojects.com/en/1.1.x/tutorial/views/
 
 ## Goals & Product Requirements
 MVP:
