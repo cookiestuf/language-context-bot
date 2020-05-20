@@ -5,3 +5,8 @@ twitter-bot-env/
 __pycache__/
 
 .vscode/
+
+credentials.py
+blog_bot.py
+
+instance/
