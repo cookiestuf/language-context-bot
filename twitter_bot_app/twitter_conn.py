@@ -1,6 +1,6 @@
 import functools
 
-from flask import Blueprint, Flask, request, send_from_directory, make_response
+from flask import Blueprint, Flask, request, render_template, send_from_directory, make_response
 from http import HTTPStatus
 
 import hashlib, hmac, base64, os, logging, json
@@ -17,6 +17,11 @@ bp = Blueprint('twitter_conn', __name__)
 """
 File written by @RickRedSix with edits by Sarah
 """
+@bp.route('/', methods=('GET', 'POST'))
+def index():
+    if request.method == 'GET':
+        return render_template('index.html')
+
 #The GET method for webhook should be used for the CRC check
 #TODO: add header validation (compare_digest https://docs.python.org/3.6/library/hmac.html)
 @bp.route('/webhook', methods=('GET', 'POST'))
