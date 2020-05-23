@@ -4,7 +4,7 @@ from twitter_bot_app import db
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.Text, primary_key=True, autoincrement=False)
+    id = db.Column(db.Text(), primary_key=True, autoincrement=False)
     subscribed = db.Column(db.Boolean)
     english = db.Column(db.Boolean)
     arabic = db.Column(db.Boolean)
@@ -32,9 +32,9 @@ class User(db.Model):
 
 class Word(db.Model):
     __tablename__ = 'words'
-    id = db.Column(db.Text, primary_key=True)
-    word = db.Column(db.Text,nullable=False) 
-    langauge = db.Column(db.Text, nullable=False)
-    article = db.Column(db.Text)
-    video = db.Column(db.Text)
-    song = db.Column(db.Text)
+    id = db.Column(db.Text(), primary_key=True)
+    word = db.Column(db.Text(),nullable=False)
+    langauge = db.Column(db.Text(), nullable=False)
+    article = db.Column(db.Text())
+    video = db.Column(db.Text())
+    song = db.Column(db.Text())
