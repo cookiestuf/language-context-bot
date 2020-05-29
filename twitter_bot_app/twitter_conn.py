@@ -1,6 +1,6 @@
 import functools
 
-from flask import Blueprint, current_app,Flask, request, render_template, send_from_directory, make_response
+from flask import Blueprint,current_app,Flask, request, render_template, send_from_directory, make_response
 from http import HTTPStatus
 
 import hashlib, hmac, base64, os, logging, json
@@ -8,8 +8,6 @@ import hashlib, hmac, base64, os, logging, json
 CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', None)
 CURRENT_USER_ID = os.environ.get('TWITTER_CURRENT_USER_ID', None)
 	     
-app = Flask(__name__)	
-
 from twitter_bot_app import db
 from twitter_bot_app.models import User, Word
 
@@ -21,7 +19,7 @@ File written by @RickRedSix with edits by Sarah
 def index():
     if request.method == 'GET':
         current_app.logger.debug('this is a DEBUG message')
-        current_app.logger.info("hello and welcome to %s" % app)
+        current_app.logger.info("hello and welcome to %s" % current_app)
         current_app.logger.warning('this is a WARNING message')
         current_app.logger.error('this is an ERROR message')
         current_app.logger.critical('this is a CRITICAL message')
@@ -68,3 +66,4 @@ def webhook():
             return ('', HTTPStatus.OK)
     
     return ('', HTTPStatus.OK)
+

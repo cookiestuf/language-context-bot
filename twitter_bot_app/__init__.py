@@ -3,7 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from dotenv import load_dotenv
-
+import logging
 db = SQLAlchemy()
 migrate = Migrate()
 load_dotenv()
@@ -18,11 +18,16 @@ def create_app():
     )
 
 
+
     db.init_app(app)
     migrate.init_app(app, db)
     
 
     from . import models
     from . import twitter_conn
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
     app.register_blueprint(twitter_conn.bp)
     return app
