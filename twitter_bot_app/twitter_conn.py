@@ -1,6 +1,6 @@
 import functools
 
-from flask import Blueprint, Flask, request, render_template, send_from_directory, make_response
+from flask import Blueprint, current_app,Flask, request, render_template, send_from_directory, make_response
 from http import HTTPStatus
 
 import hashlib, hmac, base64, os, logging, json
@@ -20,6 +20,11 @@ File written by @RickRedSix with edits by Sarah
 @bp.route('/', methods=('GET', 'POST'))
 def index():
     if request.method == 'GET':
+        current_app.logger.debug('this is a DEBUG message')
+        current_app.logger.info("hello and welcome to %s" % app)
+        current_app.logger.warning('this is a WARNING message')
+        current_app.logger.error('this is an ERROR message')
+        current_app.logger.critical('this is a CRITICAL message')
         return render_template('index.html')
 
 #The GET method for webhook should be used for the CRC check
@@ -50,21 +55,14 @@ def webhook():
 	  		
         requestJson = request.get_json()
 
-        #dump to console for debugging purposes
-        print(json.dumps(requestJson, indent=4, sort_keys=True))
-                
-        if 'direct_message_events' in requestJson.keys():
-            # DM recieved, process that
-            eventType = requestJson['direct_message_events'][0].get("type")
-            messageObject = requestJson['direct_message_events'][0].get('message_create', {})
-            messageSenderId = messageObject.get('sender_id')   
-                
-            #message is from myself so ignore (Message create fires when you send a DM too)   
-            if messageSenderId == CURRENT_USER_ID:
-                return ('', HTTPStatus.OK)
-            from . import Twitter
-            Twitter.processDirectMessageEvent(messageObject)    
-                    
+        #dump to logging for debugging purposes
+        current_app.logger.info(json.dumps(requestJson, indent=4, sort_keys=True))   
+        keys = requestJson.keys()
+        if 'favorite_events' in keys:
+            tweet_obj = requestJson['favorite_events'][0].get("favorited_status")
+            user_obj = requestJson['favorite_events'][0].get("user")
+            current_app.logger.info("You just favorited %s\'s tweet \"%s\"" % (user_obj.get("screen_name"), tweet_obj.get("text")))
+        
         else:
             #Event type not supported
             return ('', HTTPStatus.OK)
