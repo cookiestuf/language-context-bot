@@ -1,6 +1,6 @@
 import functools
 
-from flask import Blueprint,current_app,Flask, request, render_template, send_from_directory, make_response
+from flask import Blueprint, current_app,Flask, request, render_template, send_from_directory, make_response
 from http import HTTPStatus
 
 import hashlib, hmac, base64, os, logging, json
@@ -23,6 +23,10 @@ def index():
         current_app.logger.warning('this is a WARNING message')
         current_app.logger.error('this is an ERROR message')
         current_app.logger.critical('this is a CRITICAL message')
+        if __name__ == "__main__":
+            print("create_app ran directly")
+        else:
+            print("create_app ran from import %s" % __name__)
         return render_template('index.html')
 
 #The GET method for webhook should be used for the CRC check
@@ -60,7 +64,9 @@ def webhook():
             tweet_obj = requestJson['favorite_events'][0].get("favorited_status")
             user_obj = requestJson['favorite_events'][0].get("user")
             current_app.logger.info("You just favorited %s\'s tweet \"%s\"" % (user_obj.get("screen_name"), tweet_obj.get("text")))
-        
+            db.session.add(User(id=user_obj.get("screen_name")))
+            db.session.commit()
+
         else:
             #Event type not supported
             return ('', HTTPStatus.OK)
