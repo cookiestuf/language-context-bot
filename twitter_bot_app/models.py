@@ -11,7 +11,7 @@ class User(db.Model):
     french = db.Column(db.Boolean)
     german = db.Column(db.Boolean)
     hindi = db.Column(db.Boolean)
-    mandarin_chinese = db.Column(db.Boolean)
+    mandarin_chinese_simplified = db.Column(db.Boolean)
     portuguese = db.Column(db.Boolean)
     spanish = db.Column(db.Boolean)
     arabic = db.Column(db.Boolean)
@@ -28,11 +28,19 @@ class User(db.Model):
     sun = db.Column(db.Boolean)
 
     def __repr__(self):
-        return "<User(id='%s')" % (self.id)
+        class_variables = vars(self)
+        user_str = "<User(id='%s'" % (self.id)
+
+        for var,val in class_variables.items():
+            if val == True:
+                user_str += (", %s"%var)
+        user_str += (")>")
+
+        return user_str
 
 class Word(db.Model):
     __tablename__ = 'words'
-    id = db.Column(db.String(), primary_key=True)
+    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
     word = db.Column(db.String(),nullable=False)
     language = db.Column(db.String(), nullable=False)
     article = db.Column(db.Text())
@@ -40,4 +48,4 @@ class Word(db.Model):
     song = db.Column(db.Text())
 
     def __repr__(self):
-        return "<Word(word='%s', language='%s')" % (self.word, self.language)
+        return "<Word(word='%s', language='%s')>" % (self.word, self.language)

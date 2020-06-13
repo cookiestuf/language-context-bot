@@ -8,8 +8,10 @@ from twitter_bot_app.models import User, Word
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
 
+
 @pytest.fixture
 def app():
+    """Setup code to create an app with some dummy data."""
     db_fd, db_path = tempfile.mkstemp()
 
     app = create_app({
@@ -19,6 +21,12 @@ def app():
     
     with app.app_context():
         db.create_all()
+        user1 = User(id='11', subscribed=True, english=True, arabic=False, mon=True,sat=True)
+        user2 = User(id='12', subscribed=True, english=False, arabic=True,tues=True,fri=True)
+        word1 = Word(word='semejanzas', language='Spanish', article="https://www.eldiario.es/sociedad/segunda-oleada-COVID-19-otono_0_1037646334.html")
+        word2 = Word(word="蛋糕", language="mandarin_chinese_simplified", video="https://www.youtube.com/watch?v=nYQ5uc6plCs")
+
+        db.session.add_all([user1,user2,word1,word2])
         yield app
         db.session.remove()
         db.drop_all()
