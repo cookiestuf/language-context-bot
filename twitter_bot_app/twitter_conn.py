@@ -2,7 +2,7 @@ import functools
 
 from flask import Blueprint, current_app,Flask, request, render_template, send_from_directory, make_response
 from http import HTTPStatus
-
+from twitter_bot_app.db_methods import *
 import hashlib, hmac, base64, os, logging, json
 
 CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', None)
@@ -62,11 +62,10 @@ def webhook():
         keys = requestJson.keys()
         if 'favorite_events' in keys:
             tweet_obj = requestJson['favorite_events'][0].get("favorited_status")
-            user_obj = requestJson['favorite_events'][0].get("user")
+            user_obj = tweet_obj.get("user") # user that did the favoriting ie me
             current_app.logger.info("You just favorited %s\'s tweet \"%s\"" % (user_obj.get("screen_name"), tweet_obj.get("text")))
-            db.session.add(User(id=user_obj.get("screen_name")))
-            db.session.commit()
-
+            new_user = db_methods.updateUser(user_id=user_obj.get("id_str"))
+            current_app.logger.info(new_user)
         else:
             #Event type not supported
             return ('', HTTPStatus.OK)
