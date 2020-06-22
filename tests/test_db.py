@@ -22,18 +22,14 @@ def test_updateLanguageOfExistingUser(app):
     updateUser(existing_user.id,spanish=False) # change to original setup 
 
 def test_deleteUser(app):
-    existing_user = User.query.first()
-    existing_user = User.query.filter_by(id=existing_user.id).first()
-    assert existing_user != None
-    deleteUser(existing_user.id)
-    deleted_user = User.query.get(existing_user.id)
+    test_user = updateUser(user_id='5000', french=True)
+    assert test_user.id == '5000'
+    deleteUser(test_user.id)
+    deleted_user = User.query.get(test_user.id)
     assert deleted_user == None
-    # add back user. change to original setup
-    db.session.add(existing_user)
-    db.session.commit()
 
 def test_deleteUserThatDNE(app):
     dne_user = User(id='5000',french=True)
     no_user = User.query.get(dne_user.id)
     assert no_user == None
-    assert deleteUser(dne_user.id) == True #no error thrown!
+    deleteUser(dne_user.id)

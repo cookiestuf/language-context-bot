@@ -16,15 +16,12 @@ def updateUser(user_id, **kwargs):
     return User.query.filter_by(id=user_id).first()
 def deleteUser(user_id):
     """
-    Removes user with id in database. If id not in database --> return True
-    Return True if removed successfully
-    Return False if user not removed due to an error?
+    Removes user with id in database. does nothing if user DNE
     """
-    user_obj = User.query.filter_by(id=user_id)
+    user_obj = User.query.filter_by(id=user_id).first()
     if user_obj != None: # add some error catching here?
-        db.session.delete(user_obj.first())
+        db.session.delete(user_obj)
         db.session.commit()
-    return True
 
 def getUsersForLanguage(language):
     """
