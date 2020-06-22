@@ -2,17 +2,29 @@ from twitter_bot_app import db
 from twitter_bot_app.models import User, Word
 def updateUser(user_id, **kwargs):
     """
-    Adds user with id to database. If id already in database, updates arguments passed into kwargs
+    Adds user with id to database. If id already in database, updates arguments passed into kwargs.
+    Returns updated User python obj (tests rely on this functionality)
     """
+    user_id = str(user_id)
     user = User.query.get(user_id)
     if user != None:
-        user.update(kwargs)
-    #db.session.add(id=user_id, **kwargs)    
-
-def removeUser(user_id):
+        User.query.filter_by(id=user_id).update(kwargs)
+    else:
+        user = User(id=user_id, **kwargs)
+        db.session.add(user)    
+    db.session.commit()
+    return User.query.filter_by(id=user_id).first()
+def deleteUser(user_id):
     """
-    Removes user with id in database. If id not in database --> ignore
+    Removes user with id in database. If id not in database --> return True
+    Return True if removed successfully
+    Return False if user not removed due to an error?
     """
+    user_obj = User.query.filter_by(id=user_id)
+    if user_obj != None: # add some error catching here?
+        db.session.delete(user_obj.first())
+        db.session.commit()
+    return True
 
 def getUsersForLanguage(language):
     """
