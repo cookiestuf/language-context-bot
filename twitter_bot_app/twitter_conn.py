@@ -58,14 +58,14 @@ def webhook():
         requestJson = request.get_json()
 
         #dump to logging for debugging purposes
-        current_app.logger.info(json.dumps(requestJson, indent=4, sort_keys=True))   
+        #current_app.logger.info(json.dumps(requestJson, indent=4, sort_keys=True))   
         keys = requestJson.keys()
         if 'favorite_events' in keys:
             tweet_obj = requestJson['favorite_events'][0].get("favorited_status")
             user_obj = tweet_obj.get("user") # user that did the favoriting ie me
             current_app.logger.info("You just favorited %s\'s tweet \"%s\"" % (user_obj.get("screen_name"), tweet_obj.get("text")))
             new_user = updateUser(user_id=user_obj.get("id_str"))
-            current_app.logger.info(new_user)
+            current_app.logger.info(user_obj.get("id_str"))
         else:
             #Event type not supported
             return ('', HTTPStatus.OK)

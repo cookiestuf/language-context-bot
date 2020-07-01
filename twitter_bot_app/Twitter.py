@@ -15,6 +15,34 @@ def initApiObject():
     
     return api				
  
+def processCreateEventTweet(eventObj):
+    """
+    Check that it's not a tweet from the app account and extract a word of the day from the Tweet.
+    Returns (language, word).
+    """
+
+def processCreateEventMention(eventObj):
+    """
+    Parse eventObj and mention Tweet object to extract user and the language(s) and calls subscribe/unsubscribe.
+    """
+
+def _updateUsers(language):
+    """
+    Tweets at all subscribed users for language the new word with a link to it used in context.
+    """
+def _subscribe(user, languages):
+    """
+    Adds language to user to the database. Sends word of the day if word of the day for language has already been sent out.
+    """ 
+def _unsubscribe(user, languages)
+    """
+    Removes language from user from the database.
+    """
+def _sendTweet(user, content):
+    """
+    Tweets content at the user
+    """
+
 def processDirectMessageEvent(eventObj):
     
     messageText = eventObj.get('message_data').get('text')
