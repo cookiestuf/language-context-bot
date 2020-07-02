@@ -5,7 +5,7 @@ from flask_migrate import Migrate
 from dotenv import load_dotenv
 import logging
 db = SQLAlchemy()
-migrate = Migrate()
+migrate = Migrate(compare_type = True)
 load_dotenv()
 
 def create_app(test_config = None):

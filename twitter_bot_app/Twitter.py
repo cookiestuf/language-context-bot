@@ -1,7 +1,10 @@
 from TwitterAPI import TwitterAPI
 
 import os
-
+#======== only needed for shell testing 
+from dotenv import load_dotenv
+load_dotenv()
+#========
 CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY', None)
 CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', None)
 
@@ -34,15 +37,17 @@ def _subscribe(user, languages):
     """
     Adds language to user to the database. Sends word of the day if word of the day for language has already been sent out.
     """ 
-def _unsubscribe(user, languages)
+def _unsubscribe(user, languages):
     """
     Removes language from user from the database.
     """
-def _sendTweet(user, content):
+def _postTweet(user, content):
     """
-    Tweets content at the user
+    Posts a tweet with content and mentions user
     """
-
+    twitterAPI = initApiObject()
+    r = twitterAPI.request('statuses/update', {'status': "@%s %s" % (user, content)})
+    # 4 logging purposes -- print('SUCCESS' if r.status_code == 200 else 'PROBLEM: ' + r.text) 
 def processDirectMessageEvent(eventObj):
     
     messageText = eventObj.get('message_data').get('text')
