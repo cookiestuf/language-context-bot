@@ -7,7 +7,7 @@ from twitter_bot_app.db_methods import *
 def test_updateNewUser(app):    
     # FYI the app that is yield from conftest is already in context!
     user = User(id_str='5000',french=True)
-    db_user = updateUser(id_str='5000', french=True)
+    db_user = updateUser('5000', french=True)
     assert db_user.id_str == user.id_str
     assert db_user.french == user.french
     db.session.delete(db_user)
@@ -21,7 +21,7 @@ def test_updateLanguageOfExistingUser(app):
     updateUser(existing_user.id_str,spanish=False) # change to original setup 
 
 def test_deleteUser(app):
-    test_user = updateUser(id_str='5000', french=True)
+    test_user = updateUser('5000', french=True)
     assert test_user.id_str == '5000'
     deleteUser(test_user.id_str)
     deleted_user = User.query.get(test_user.id_str)

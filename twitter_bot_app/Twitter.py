@@ -1,5 +1,5 @@
 from TwitterAPI import TwitterAPI
-
+from twitter_bot_app.db_methods import updateUser, deleteUser
 import os
 #======== only needed for shell testing 
 from dotenv import load_dotenv
@@ -18,36 +18,65 @@ def initApiObject():
     
     return api				
  
-def processCreateEventTweet(eventObj):
+def processNewTweetFromOther(eventObj, testing=False):
     """
     Check that it's not a tweet from the app account and extract a word of the day from the Tweet.
     Returns (language, word).
     """
+    return
 
-def processCreateEventMention(eventObj):
+def processNewTweetAtSelf(eventObj,testing=False):
     """
     Parse eventObj and mention Tweet object to extract user and the language(s) and calls subscribe/unsubscribe.
     """
-
-def _updateUsers(language):
+    # TODO: add functionality for multiple languages in one tweet
+    tweet_obj = eventObj["tweet_create_events"][0]
+    source_user_id_str = tweet_obj['user']['id_str'] 
+    source_user_screen_name = tweet_obj['user']['screen_name'] 
+    text= tweet_obj['text'].lower().split(' ')
+    language = ""
+    action = ""
+    for word in text:
+        if "@" in word:
+            continue
+        elif "sub" in word:
+            action = word
+        else:
+            language = word
+    if action == "" or language == "":
+        #TODO: error out!
+        return
+    if action == "subscribe":
+        _updateUserLanguages(source_user_id_str, [language], True)
+    else:
+        _updateUserLanguages(source_user_id_str, [language], False)
+    if not testing:
+        # TODO: send confirmation tweet to user 
+        _postTweet(source_user_screen_name, "confirmed!")
+        return
+    return
+def _sendUpdateToUsersForLanguage(language):
     """
     Tweets at all subscribed users for language the new word with a link to it used in context.
     """
-def _subscribe(user, languages):
+    return
+def _updateUserLanguages(id_str, languages, value):
     """
-    Adds language to user to the database. Sends word of the day if word of the day for language has already been sent out.
+    Adds or removes languages to user to the database based on value.
+    TODO: Sends word of the day if word of the day for language has already been sent out.
     """ 
-def _unsubscribe(user, languages):
-    """
-    Removes language from user from the database.
-    """
-def _postTweet(user, content):
+    # construct dictionary of each language in languages = value
+    dictionary = {language: value for language in languages}
+    updateUser(id_str, **dictionary)
+    return
+def _postTweet(screen_name, content):
     """
     Posts a tweet with content and mentions user
     """
     twitterAPI = initApiObject()
-    r = twitterAPI.request('statuses/update', {'status': "@%s %s" % (user, content)})
+    r = twitterAPI.request('statuses/update', {'status': "@%s %s" % (screen_name, content)})
     # 4 logging purposes -- print('SUCCESS' if r.status_code == 200 else 'PROBLEM: ' + r.text) 
+    return
 def processDirectMessageEvent(eventObj):
     
     messageText = eventObj.get('message_data').get('text')
