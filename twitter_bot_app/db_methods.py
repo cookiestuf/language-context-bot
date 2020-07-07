@@ -1,24 +1,24 @@
 from twitter_bot_app import db
 from twitter_bot_app.models import User, Word
-def updateUser(user_id, **kwargs):
+def updateUser(id_str, **kwargs):
     """
-    Adds user with id to database. If id already in database, updates arguments passed into kwargs.
+    Adds user with id_str to database. If id_str already in database, updates arguments passed into kwargs.
     Returns updated User python obj (tests rely on this functionality)
     """
-    user_id = str(user_id)
-    user = User.query.get(user_id)
+    id_str=str(id_str)
+    user = User.query.filter_by(id_str=id_str).first()
     if user != None:
-        User.query.filter_by(id=user_id).update(kwargs)
+        User.query.filter_by(id_str=id_str).update(kwargs)
     else:
-        user = User(id=user_id, **kwargs)
+        user = User(id_str=id_str, **kwargs)
         db.session.add(user)    
     db.session.commit()
-    return User.query.filter_by(id=user_id).first()
-def deleteUser(user_id):
+    return User.query.filter_by(id_str=id_str).first()
+def deleteUser(id_str):
     """
-    Removes user with id in database. does nothing if user DNE
+    Removes user with id_str in database. does nothing if user DNE
     """
-    user_obj = User.query.filter_by(id=user_id).first()
+    user_obj = User.query.filter_by(id_str=id_str).first()
     if user_obj != None: # add some error catching here?
         db.session.delete(user_obj)
         db.session.commit()
@@ -28,7 +28,7 @@ def getUsersForLanguage(language):
     Returns all subscribed users for language in a list.
     """
 
-def getUser(user_id):
+def getUser(id_str):
     """
-    Return User object of given id
+    Return User object of given id_str
     """

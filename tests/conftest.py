@@ -5,9 +5,6 @@ import pytest
 from twitter_bot_app import create_app,db
 from sqlalchemy import text
 from twitter_bot_app.models import User, Word
-with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
-    _data_sql = f.read().decode('utf8')
-
 
 @pytest.fixture
 def app():
@@ -21,8 +18,8 @@ def app():
     
     with app.app_context():
         db.create_all()
-        user1 = User(id='11', subscribed=True, english=True, arabic=False, mon=True,sat=True)
-        user2 = User(id='12', subscribed=True, english=False, arabic=True,tues=True,fri=True)
+        user1 = User(id_str='11', english=True, arabic=False, mon=True,sat=True)
+        user2 = User(id_str='12', english=False, arabic=True,tues=True,fri=True)
         word1 = Word(word='semejanzas', language='Spanish', article="https://www.eldiario.es/sociedad/segunda-oleada-COVID-19-otono_0_1037646334.html")
         word2 = Word(word="蛋糕", language="mandarin_chinese_simplified", video="https://www.youtube.com/watch?v=nYQ5uc6plCs")
 

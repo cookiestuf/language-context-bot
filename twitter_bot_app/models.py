@@ -5,9 +5,8 @@ from twitter_bot_app import db
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    id_str = db.Column(db.String(32), unique=True)
+    id_str = db.Column(db.String(32), unique=True, nullable=False)
     screen_name = db.Column(db.String(32))
-    subscribed = db.Column(db.Boolean)
     english = db.Column(db.Boolean)
     arabic = db.Column(db.Boolean)
     french = db.Column(db.Boolean)
