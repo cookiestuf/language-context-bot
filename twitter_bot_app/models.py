@@ -4,7 +4,9 @@ from twitter_bot_app import db
 
 class User(db.Model):
     __tablename__ = 'users'
-    id = db.Column(db.String(32), primary_key=True, autoincrement=False)
+    id = db.Column(db.Integer, primary_key=True)
+    id_str = db.Column(db.String(32), unique=True)
+    screen_name = db.Column(db.String(32))
     subscribed = db.Column(db.Boolean)
     english = db.Column(db.Boolean)
     arabic = db.Column(db.Boolean)
@@ -29,7 +31,7 @@ class User(db.Model):
 
     def __repr__(self):
         class_variables = vars(self)
-        user_str = "<User(id='%s'" % (self.id)
+        user_str = "<User(id_str='%s'" % (self.id_str)
 
         for var,val in class_variables.items():
             if val == True:
@@ -40,12 +42,12 @@ class User(db.Model):
 
 class Word(db.Model):
     __tablename__ = 'words'
-    id = db.Column(db.Integer(), primary_key=True,autoincrement=True)
-    word = db.Column(db.String(),nullable=False)
-    language = db.Column(db.String(), nullable=False)
-    article = db.Column(db.Text())
-    video = db.Column(db.Text())
-    song = db.Column(db.Text())
+    id = db.Column(db.Integer, primary_key=True)
+    word = db.Column(db.String(32),nullable=False)
+    language = db.Column(db.String(32), nullable=False)
+    article = db.Column(db.Text)
+    video = db.Column(db.Text)
+    song = db.Column(db.Text)
 
     def __repr__(self):
         return "<Word(word='%s', language='%s')>" % (self.word, self.language)
