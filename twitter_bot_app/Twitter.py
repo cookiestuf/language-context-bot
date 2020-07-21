@@ -11,6 +11,9 @@ CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET', None)
 ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN', None)
 ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET', None)
 
+MY_ID_STR = "1235095367600836608"
+ACTIONS = set(['subscribe', 'unsubscribe'])
+LANGUAGES = set(['spanish'])
 def initApiObject():
     
     #user authentication
@@ -23,14 +26,21 @@ def processNewTweetFromOther(eventObj, testing=False):
     Check that it's not a tweet from the app account and extract a word of the day from the Tweet.
     Returns (language, word).
     """
-    return
+    pass
 
 def processNewTweetAtSelf(eventObj,testing=False):
     """
     Parse eventObj and mention Tweet object to extract user and the language(s) and calls subscribe/unsubscribe.
+    returns True if database updated
+    returns False if database not updated 
     """
     # TODO: add functionality for multiple languages in one tweet
     tweet_obj = eventObj["tweet_create_events"][0]
+    user_mentions = tweet_obj['entities']['user_mentions']
+    # a valid user mention is one where there is only 1 user mention object and the id_str matches my id_str
+    if len(user_mentions) != 1 and user_mentions[0]['id_str'] != MY_ID_STR:
+        print('Tweet does not mention account: %s' % (tweet_obj['text'])) 
+        return False
     source_user_id_str = tweet_obj['user']['id_str'] 
     source_user_screen_name = tweet_obj['user']['screen_name'] 
     text= tweet_obj['text'].lower().split(' ')
@@ -39,13 +49,13 @@ def processNewTweetAtSelf(eventObj,testing=False):
     for word in text:
         if "@" in word:
             continue
-        elif "sub" in word:
+        elif word in ACTIONS:
             action = word
-        else:
+        elif word in LANGUAGES:
             language = word
     if action == "" or language == "":
-        #TODO: error out!
-        return
+        print('Tweet is not a valid worded subscription or unsubscription: %s' % (tweet_obj['text']))
+        return False
     if action == "subscribe":
         _updateUserLanguages(source_user_id_str, [language], True)
     else:
@@ -53,8 +63,7 @@ def processNewTweetAtSelf(eventObj,testing=False):
     if not testing:
         # TODO: send confirmation tweet to user 
         _postTweet(source_user_screen_name, "confirmed!")
-        return
-    return
+    return True
 def _sendUpdateToUsersForLanguage(language):
     """
     Tweets at all subscribed users for language the new word with a link to it used in context.
@@ -75,8 +84,12 @@ def _postTweet(screen_name, content):
     """
     twitterAPI = initApiObject()
     r = twitterAPI.request('statuses/update', {'status': "@%s %s" % (screen_name, content)})
-    # 4 logging purposes -- print('SUCCESS' if r.status_code == 200 else 'PROBLEM: ' + r.text) 
-    return
+    if r.status_code == 200:
+        print('SUCCESS')
+        return True
+    else:
+        print('PROBLEM: ' + r.text) 
+        return False
 def processDirectMessageEvent(eventObj):
     
     messageText = eventObj.get('message_data').get('text')

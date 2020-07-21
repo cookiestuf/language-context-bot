@@ -4,13 +4,13 @@ from twitter_bot_app import db
 from twitter_bot_app.Twitter import processNewTweetAtSelf, processNewTweetFromOther
 from twitter_bot_app.db_methods import updateUser, deleteUser
 
-my_user_id = "12345678"
+my_user_id = "1235095367600836608"
 my_screen_name = "emdicsarah"
 new_user_id_str = "944480690"
 new_user_screen_name = "spanishsubscriptor"
 
 # check that db has correct subscribed entry for json
-def get_tweet(text):
+def get_tweet(text, userid=my_user_id):
     return {"created_at": "Thu May 10 17:41:57 +0000 2018",
 "id_str": "994633657141813248",
 "text": "@%s %s" % (my_screen_name, text),
@@ -26,11 +26,19 @@ def get_tweet(text):
     15
     ],
     "screen_name": my_screen_name,
-    "id": int(my_user_id),
-    "id_str": my_user_id }],}}
+    "id": int(userid),
+    "id_str": userid }],}}
 
-def test_processNewTweetFromOther(app):
-    return 
+def test_processNewTweetFromSelf(app):
+    tweet_dict = get_tweet("lalalal", userid=new_user_id_str)
+    event_obj = {"for_user_id": my_user_id,"tweet_create_events": [tweet_dict]}
+    res = processNewTweetAtSelf(event_obj,testing=True)
+    assert res == False
+def test_processNewTweetAtSelfWrongFormat(app):
+    tweet_dict = get_tweet("@emdicsarah spanish")
+    event_obj = {"for_user_id": my_user_id,"tweet_create_events": [tweet_dict]}
+    res = processNewTweetAtSelf(event_obj,testing=True)
+    assert res == False
 def test_processNewTweetAtSelfSubscribe(app):
     tweet_dict = get_tweet("@emdicsarah subscribe spanish")
     event_obj = {"for_user_id": my_user_id,"tweet_create_events": [tweet_dict]}
